@@ -1,7 +1,0 @@
-{
-    "language_id": "py",
-    "path": ".",
-    "scripts": [
-        "py_script.py"
-    ]
-}

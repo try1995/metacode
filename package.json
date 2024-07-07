@@ -18,23 +18,23 @@
         "title": "Hello World"
       },
       {
-        "command": "metacode.addComments",
-        "title": "Add Comments"
+        "command": "metacode.codeComments",
+        "title": "metacode: add code comments"
       }
     ],
     "configuration": {
       "type": "object",
       "title": "metacode Extension Configuration",
       "properties": {
-        "metacode.llmUrl": {
+        "metacode.llmHost": {
           "type": "string",
-          "default": "http://localhost:11434/api/chat",
-          "description": "Enable or disable the feature."
+          "default": "localhost",
+          "description": "url"
         },
-        "myExtension.llmType": {
+        "metacode.llmPort": {
           "type": "string",
-          "default": "ollama",
-          "description": "Greeting message to display."
+          "default": "31001",
+          "description": "port"
         }
       }
     }

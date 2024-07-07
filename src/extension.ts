@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { request } from 'follow-redirects/http';
 import { IncomingMessage, RequestOptions } from 'http';
 import { Buffer } from 'buffer';
+import { Init } from 'v8';
 
 
 
@@ -25,11 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Hello World from MetaCodexxxxx!');
 	});
 
-	const addCommuentDisposable = vscode.commands.registerCommand('metacode.addComments', () => {
-		// 读取配置项
-		const config = vscode.workspace.getConfiguration('metacode');
-		let llmUrl = config.get<string>('llmUrl');
-		console.log(llmUrl);
+	const addCommuentDisposable = vscode.commands.registerCommand('metacode.codeComments', () => {
 
 		const global = vscode.window;
 		const editor = global.activeTextEditor;
@@ -47,9 +44,19 @@ export function activate(context: vscode.ExtensionContext) {
 				let innerResult = JSON.parse(response);  // 去除外部的引号和转义字符
 				console.log('Response:', innerResult);
 				editor.edit((edit) => {
-					let ss =  "def sum(a: int, b: int):\n    \"\"\"\n    @desc:\n        计算两个整数的和。\n        \n    @params:\n        a (int): 第一个整数。\n        b (int): 第二个整数。\n    \n    @return:\n        int: 参数 a 和 b 的和。\n    \"\"\"\n    return a + b\n\ndef checkRes(res:str):\n    \"\"\"\n    @desc:\n        将输入的字符串结果进行格式化处理。\n        \n    @params:\n        res (str): 输入的结果字符串。\n    \n    @return:\n        str: 处理后的结果字符串，去除首尾的特定格式，并返回原始文本内容。\n    \"\"\"\n    res = res.rstrip(\"```python\").lstrip('```')\n    return res"
-					edit.replace(editor.selection, innerResult);
-					// edit.insert(new vscode.Position(editor.selection.start.line, 0), response);
+					// edit.replace(editor.selection, innerResult);
+				    const selection = editor.selection;
+					const document = editor.document;
+
+					// 获取选择区域的首行
+					let cur_line = selection.start.line;
+					const lineText = document.lineAt(cur_line+1).text;
+					const indent = getIndentation(lineText); // 获取当前行的缩进
+					// for (let line of innerResult.split("\n")) {
+					// 	edit.insert(new vscode.Position(cur_line+1, 0),  `${indent}`+line+`\n`);
+					// }
+					// TODO 嵌套类型的缩进有问题
+					edit.insert(new vscode.Position(cur_line+1, 0),  `${indent}`+innerResult+`\n`);
 					vscode.window.showInformationMessage("已完成代码注释！");
 				});
 			})
@@ -66,17 +73,29 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(addCommuentDisposable);
 }
 
+function getIndentation(line: string) {
+    const match = line.match(/^\s*/);
+    return match ? match[0] : '';
+}
+
+
 // This method is called when your extension is deactivated
 export function deactivate() { }
 
 function send_data(query: string): Promise<string> {
 	console.log("Sending request...");
+	// 读取配置项
+	const config = vscode.workspace.getConfiguration('metacode');
+	let llmHost = config.get<string>('llmHost');
+	console.log(llmHost);
+	let llmPort = config.get<string>('llmPort');
+	console.log(llmPort);
 
 	// 定义请求选项
 	const options: RequestOptions = {
 		method: 'POST',
-		hostname: 'localhost',
-		port: 31001,
+		hostname: llmHost,
+		port: llmPort,
 		path: '/generate',
 		headers: {
 			'Content-Type': 'application/json'

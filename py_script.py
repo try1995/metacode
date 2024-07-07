@@ -45,7 +45,7 @@ def sum(a: int, b: int):
     """
     return a + b
 
-返回的结果只需要补全@desc，@params，@return的内容，不要包含任何额外的文本或解释，也不要使用任何格式标记，只允许添加注释，禁止修改源代码，禁止返回示例代码
+保持代码缩进，返回的结果只需要补全@desc，@params，@return的内容，不要包含任何额外的文本或解释，也不要使用任何格式标记，只允许添加注释，禁止修改源代码，禁止返回示例代码
 
 代码：
 {code}
@@ -77,9 +77,10 @@ def get_data_from_qwen(query, prompt: int):
     print(emPrompt.get_prompt_by_index(prompt).format(code=query))
 
     response = requests.request("POST", url, headers=headers, data=payload)
-    print(response.json()["response"])
+    res = get_comments(response.json()["response"])
+    logger.debug(res)
 
-    return get_comments(response.json()["response"])
+    return res
 
 
 @app.post("/generate")
