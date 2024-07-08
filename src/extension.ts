@@ -76,7 +76,6 @@ export function activate(context: vscode.ExtensionContext) {
 				let innerResult = JSON.parse(response);  // 去除外部的引号和转义字符
 				console.log('Response:', innerResult);
 				vscode.window.showInformationMessage(innerResult, { modal: true });
-				// vscode.window.showOpenDialog(innerResult);
 			})
 			.catch(error => {
 				console.error('Error:', error);
@@ -85,8 +84,48 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 	});
 
+	const codeSummaryAskDisposable = vscode.commands.registerCommand('metacode.codeSummaryAsk', () => {
+		const global = vscode.window;
+		const editor = global.activeTextEditor;
+		if (!editor) {
+			return;
+		}
+		const document = editor.document;
+		// 调用showInputBox方法显示输入框
+		let ask = '请解释其主要功能';
+		const result = vscode.window.showInputBox({
+			prompt: '请输入和代码相关的问题',
+            placeHolder: ask
+		}).then(value => {
+			// 检查用户是否输入了值
+			if (value !== undefined) {
+				ask = value ? value : ask;
+			}
+			vscode.window.showInformationMessage(`ask：${ask}。代码总结正在进行...`);
+			let text = document.getText(editor.selection);
+			if (!text) {
+				text = document.getText();
+			}
+			const response = send_data(text, 2, ask)
+			.then(response => {
+				let innerResult = JSON.parse(response);  // 去除外部的引号和转义字符
+				console.log('Response:', innerResult);
+				vscode.window.showInformationMessage(innerResult, { modal: true });
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				vscode.window.showErrorMessage("llm服务异常!");
+				return;
+			});
+
+		}) ;
+
+
+	});
+
 	context.subscriptions.push(codeCommuentDisposable);
 	context.subscriptions.push(codeSummaryDisposable);
+	context.subscriptions.push(codeSummaryAskDisposable);
 }
 
 function getIndentation(line: string) {
@@ -98,7 +137,7 @@ function getIndentation(line: string) {
 // This method is called when your extension is deactivated
 export function deactivate() { }
 
-function send_data(query: string, prompt: number): Promise<string> {
+function send_data(query: string, prompt: number, ask: string = ""): Promise<string> {
 	console.log("Sending request...");
 	// 读取配置项
 	const config = vscode.workspace.getConfiguration('metacode');
@@ -121,7 +160,8 @@ function send_data(query: string, prompt: number): Promise<string> {
 	// 定义要发送的数据
 	const postData = JSON.stringify({
 		query: query,
-		prompt: prompt
+		prompt: prompt,
+		ask: ask
 	});
 
 

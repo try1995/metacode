@@ -29,3 +29,13 @@ def sum(a: int, b: int):
 {code}
 
 '''
+
+code_comments_ask = '''
+你是一个高级程序员，请阅读下面代码并用中文回答问题
+
+代码：
+{code}
+
+问题:
+{ask}
+'''

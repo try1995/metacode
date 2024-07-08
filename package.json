@@ -1,8 +1,9 @@
 {
-  "name": "metacode",
-  "displayName": "MetaCode",
+  "name": "metacodeless",
+  "displayName": "MetaCodeLess",
   "description": "use llm to generate code comments, summary, readme and so on.",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "publisher": "try1995",
   "engines": {
     "vscode": "^1.91.0"
   },
@@ -13,6 +14,7 @@
   "categories": [
     "Other"
   ],
+  "icon": "icon.png",
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
@@ -24,6 +26,10 @@
       {
         "command": "metacode.codeSummary",
         "title": "metacode: code summary (show)"
+      },
+      {
+        "command": "metacode.codeSummaryAsk",
+        "title": "metacode: code summary (ask)"
       }
     ],
     "configuration": {

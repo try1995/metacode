@@ -14,6 +14,7 @@ from prompt import *
 class emPrompt(Enum):
     codeComment=0
     codeSummary=1
+    codeSummaryAsk=2
 
     @classmethod
     def get_prompt_by_index(cls, index):
@@ -22,6 +23,8 @@ class emPrompt(Enum):
                 return code_comments
             case cls.codeSummary.value:
                 return code_summary
+            case cls.codeSummaryAsk.value:
+                return code_comments_ask
             case _:
                 logger.error(f"unknow index:{index}")
     
@@ -38,6 +41,7 @@ app = FastAPI()
 class item(BaseModel):
     query: str
     prompt: int
+    ask: str = ""
 
 pattern = re.compile('(""".*?""")', re.DOTALL)
 
@@ -51,20 +55,20 @@ def get_comments(res:str):
     return res
 
 
-def get_data_from_qwen(query, prompt: int):
+def get_data_from_qwen(query, prompt: int, ask):
     url = "http://192.168.0.110:31010/api/generate"
-
+    prompt = emPrompt.get_prompt_by_index(prompt).format(code=query, ask=ask)
 
     payload = json.dumps({
     "model": "qwen2:7b",
-    "prompt": emPrompt.get_prompt_by_index(prompt).format(code=query),
+    "prompt": prompt,
     "stream": False
     })
     headers = {
         'Content-Type': 'application/json'
     }
 
-    logger.debug(emPrompt.get_prompt_by_index(prompt).format(code=query))
+    logger.debug(prompt)
 
     response = requests.request("POST", url, headers=headers, data=payload)
     res = emPrompt.val_res_by_index(prompt, response.json()["response"])
@@ -75,7 +79,7 @@ def get_data_from_qwen(query, prompt: int):
 
 @app.post("/generate")
 def service(item: item):
-    return get_data_from_qwen(item.query, item.prompt)
+    return get_data_from_qwen(item.query, item.prompt, item.ask)
 
 
 

@@ -3,8 +3,12 @@
 
 ## Features
 `Shift+Cmd+p`，搜索metacode，目前功能如下
+
 1.metacode: code comments (add)，添加中文代码注释，需要打开vscode选定代码，插入注释
-2.metacode: code summary (show)，解释打开窗口的代码，无需选定代码，弹出解释窗口
+
+2.metacode: code summary (show)，解释打开窗口的代码，无需选定代码，弹出解释窗口，如果选定代码则只解释选定的代码
+
+3.metacode: code summary (ask)，弹出窗口，用户补充需要提问的内容：比如get_xxx的方法是做什么用的
 
 ## Requirements
 
@@ -31,9 +35,15 @@ TODO 代码自动补全，指定区域的代码解释，单元测试生成
 
 Users appreciate release notes as you update your extension.
 
-### 1.0.0
+### 0.0.1
 
 Initial release of metacode
+
+### 0.0.2
+
+新增metacode: code summary (ask)
+
+新增可以选择代码块进行解释
 
 
 ## Following extension guidelines
