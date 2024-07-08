@@ -1,20 +1,15 @@
 # metacode README
-
-This is the README for your extension "metacode". After writing up a brief description, we recommend including the following sections.
+这是一个可以提高代码开发效率的插件
 
 ## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+`Shift+Cmd+p`，搜索metacode，目前功能如下
+1.metacode: code comments (add)，添加中文代码注释，需要打开vscode选定代码，插入注释
+2.metacode: code summary (show)，解释打开窗口的代码，无需选定代码，弹出解释窗口
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+1.本地或者远程的llm大模型
+2.需要实现py_script中的本地服务接口，本插件使用的是ollama，qwen:7b模型，本地服务能力与插件解耦，方便随时调整
 
 ## Extension Settings
 
@@ -24,12 +19,13 @@ For example:
 
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+* `metacode.llmHost`: py_script.py中部署的机器ip，默认localhost.
+* `metacode.llmPort`: py_scripy.py中部署的端口,默认31001.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+1.目前内嵌的函数，多行缩进有点小问题
+TODO 代码自动补全，指定区域的代码解释，单元测试生成
 
 ## Release Notes
 
@@ -37,17 +33,8 @@ Users appreciate release notes as you update your extension.
 
 ### 1.0.0
 
-Initial release of ...
+Initial release of metacode
 
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
 
 ## Following extension guidelines
 
@@ -70,15 +57,3 @@ You can author your README using Visual Studio Code. Here are some useful editor
 
 **Enjoy!**
 
-## config
-1.	需要在.vscode的setting里面设置如下参数
-"metacode":{
-		"llmHost":"xxx",
-        "llmPort":"xxxx"
-	},
-2.需要实现py_script中的本地服务接口，本插件使用的是ollama，qwen:7b模型
-
-## usage
-`Shift+Cmd+p`，搜索metacode，目前功能如下
-metacode: code comments (add)，添加中文代码注释，需要打开vscode选定代码，插入注释
-metacode: code summary (show)，解释打开窗口的代码，无需选定代码，弹出解释窗口
