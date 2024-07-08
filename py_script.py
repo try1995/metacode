@@ -9,15 +9,29 @@ from pydantic import BaseModel
 import uvicorn
 from enum import Enum
 from loguru import logger
+from prompt import *
 
 class emPrompt(Enum):
     codeComment=0
+    codeSummary=1
 
     @classmethod
     def get_prompt_by_index(cls, index):
         match index:
             case cls.codeComment.value:
                 return code_comments
+            case cls.codeSummary.value:
+                return code_summary
+            case _:
+                logger.error(f"unknow index:{index}")
+    
+    @classmethod
+    def val_res_by_index(cls, index, res):
+        match index:
+            case cls.codeComment.value:
+                return get_comments(res)
+            case _:
+                return res
 
 app = FastAPI()
 
@@ -27,30 +41,6 @@ class item(BaseModel):
 
 pattern = re.compile('(""".*?""")', re.DOTALL)
 
-
-code_comments = '''
-你是一个高级程序员，请为下面的代码添加详细的注释，并将注释添加到代码中。注释的示例代码格式如下：
-
-def sum(a: int, b: int):
-    """
-    @desc:
-        计算两个整数的和。
-        
-    @params:
-        a (int): 第一个整数。
-        b (int): 第二个整数。
-    
-    @return:
-        int: 参数 a 和 b 的和。
-    """
-    return a + b
-
-保持代码缩进，返回的结果只需要补全@desc，@params，@return的内容，不要包含任何额外的文本或解释，也不要使用任何格式标记，只允许添加注释，禁止修改源代码，禁止返回示例代码
-
-代码：
-{code}
-
-'''
 
 def get_comments(res:str):
     try:
@@ -74,10 +64,10 @@ def get_data_from_qwen(query, prompt: int):
         'Content-Type': 'application/json'
     }
 
-    print(emPrompt.get_prompt_by_index(prompt).format(code=query))
+    logger.debug(emPrompt.get_prompt_by_index(prompt).format(code=query))
 
     response = requests.request("POST", url, headers=headers, data=payload)
-    res = get_comments(response.json()["response"])
+    res = emPrompt.val_res_by_index(prompt, response.json()["response"])
     logger.debug(res)
 
     return res

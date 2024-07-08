@@ -14,12 +14,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "metacode.helloWorld",
-        "title": "Hello World"
+        "command": "metacode.codeComments",
+        "title": "metacode: code comments (add)"
       },
       {
-        "command": "metacode.codeComments",
-        "title": "metacode: add code comments"
+        "command": "metacode.codeSummary",
+        "title": "metacode: code summary (show)"
       }
     ],
     "configuration": {

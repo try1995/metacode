@@ -17,17 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "metacode" is now active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const hellowDisposable = vscode.commands.registerCommand('metacode.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from MetaCodexxxxx!');
-	});
-
-	const addCommuentDisposable = vscode.commands.registerCommand('metacode.codeComments', () => {
-
+	const codeCommuentDisposable = vscode.commands.registerCommand('metacode.codeComments', () => {
 		const global = vscode.window;
 		const editor = global.activeTextEditor;
 		if (!editor) {
@@ -39,7 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
 			text = "请选择需要处理的完整代码块！";
 		}
 		vscode.window.showInformationMessage("代码注释正在进行...");
-		const response = send_data(text)
+		const response = send_data(text, 0)
 			.then(response => {
 				let innerResult = JSON.parse(response);  // 去除外部的引号和转义字符
 				console.log('Response:', innerResult);
@@ -68,9 +58,29 @@ export function activate(context: vscode.ExtensionContext) {
 
 	});
 
+	const codeSummaryDisposable = vscode.commands.registerCommand('metacode.codeSummary', () => {
+		const global = vscode.window;
+		const editor = global.activeTextEditor;
+		if (!editor) {
+			return;
+		}
+		const document = editor.document;
+		vscode.window.showInformationMessage("代码总结正在进行...");
+		const response = send_data(document.getText(), 1)
+			.then(response => {
+				let innerResult = JSON.parse(response);  // 去除外部的引号和转义字符
+				console.log('Response:', innerResult);
+				vscode.window.showInformationMessage(innerResult, { modal: true });
+				// vscode.window.showOpenDialog(innerResult);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				vscode.window.showErrorMessage("llm服务异常!");
+				return;
+			});
+	});
 
-	context.subscriptions.push(hellowDisposable);
-	context.subscriptions.push(addCommuentDisposable);
+	context.subscriptions.push(codeCommuentDisposable);
 }
 
 function getIndentation(line: string) {
@@ -82,7 +92,7 @@ function getIndentation(line: string) {
 // This method is called when your extension is deactivated
 export function deactivate() { }
 
-function send_data(query: string): Promise<string> {
+function send_data(query: string, prompt: number): Promise<string> {
 	console.log("Sending request...");
 	// 读取配置项
 	const config = vscode.workspace.getConfiguration('metacode');
@@ -105,7 +115,7 @@ function send_data(query: string): Promise<string> {
 	// 定义要发送的数据
 	const postData = JSON.stringify({
 		query: query,
-		prompt: 0
+		prompt: prompt
 	});
 
 
