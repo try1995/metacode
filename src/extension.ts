@@ -66,7 +66,12 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 		const document = editor.document;
 		vscode.window.showInformationMessage("代码总结正在进行...");
-		const response = send_data(document.getText(), 1)
+
+		let text = document.getText(editor.selection);
+		if (!text) {
+			text = document.getText();
+		}
+		const response = send_data(text, 1)
 			.then(response => {
 				let innerResult = JSON.parse(response);  // 去除外部的引号和转义字符
 				console.log('Response:', innerResult);
@@ -81,6 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(codeCommuentDisposable);
+	context.subscriptions.push(codeSummaryDisposable);
 }
 
 function getIndentation(line: string) {
