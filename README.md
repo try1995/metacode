@@ -69,3 +69,16 @@ You can author your README using Visual Studio Code. Here are some useful editor
 * [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
 **Enjoy!**
+
+## config
+1.	需要在.vscode的setting里面设置如下参数
+"metacode":{
+		"llmHost":"xxx",
+        "llmPort":"xxxx"
+	},
+2.需要实现py_script中的本地服务接口，本插件使用的是ollama，qwen:7b模型
+
+## usage
+`Shift+Cmd+p`，搜索metacode，目前功能如下
+metacode: code comments (add)，添加中文代码注释，需要打开vscode选定代码，插入注释
+metacode: code summary (show)，解释打开窗口的代码，无需选定代码，弹出解释窗口

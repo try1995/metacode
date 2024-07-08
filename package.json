@@ -1,7 +1,7 @@
 {
   "name": "metacode",
   "displayName": "MetaCode",
-  "description": "use llm to generate code, readme and so on.",
+  "description": "use llm to generate code comments, summary, readme and so on.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.91.0"
