@@ -5,7 +5,7 @@
   "version": "0.0.2",
   "publisher": "try1995",
   "engines": {
-    "vscode": "^1.91.0"
+    "vscode": "^1.68.1"
   },
   "repository": {
       "type": "git",

@@ -13,6 +13,7 @@
 ## Requirements
 
 1.本地或者远程的llm大模型
+
 2.需要实现py_script中的本地服务接口，本插件使用的是ollama，qwen:7b模型，本地服务能力与插件解耦，方便随时调整
 
 ## Extension Settings
@@ -29,6 +30,7 @@ This extension contributes the following settings:
 ## Known Issues
 
 1.目前内嵌的函数，多行缩进有点小问题
+
 TODO 代码自动补全，指定区域的代码解释，单元测试生成
 
 ## Release Notes
@@ -44,6 +46,12 @@ Initial release of metacode
 新增metacode: code summary (ask)
 
 新增可以选择代码块进行解释
+
+### 0.0.3
+
+1.感谢亲妹制作的icon，酷酷的
+
+2.降低插件版本要求到1.68.1
 
 
 ## Following extension guidelines
