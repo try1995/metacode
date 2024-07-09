@@ -51,7 +51,7 @@ Initial release of metacode
 
 1.感谢亲妹制作的icon，酷酷的
 
-2.降低插件版本要求到1.68.1
+2.降低插件版本要求到1.68.0
 
 
 ## Following extension guidelines

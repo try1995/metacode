@@ -5,11 +5,11 @@
   "version": "0.0.2",
   "publisher": "try1995",
   "engines": {
-    "vscode": "^1.68.1"
+    "vscode": "^1.68.0"
   },
   "repository": {
-      "type": "git",
-      "url": "https://github.com/try1995/metacode.git"
+    "type": "git",
+    "url": "https://github.com/try1995/metacode.git"
   },
   "categories": [
     "Other"
@@ -65,7 +65,6 @@
     "@types/follow-redirects": "^1.14.4",
     "@types/mocha": "^10.0.7",
     "@types/node": "^20.14.10",
-    "@types/vscode": "^1.91.0",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.11.0",
     "@vscode/test-cli": "^0.0.9",
@@ -77,6 +76,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@types/vscode": "^1.68.0",
     "express": "^4.19.2",
     "follow-redirects": "^1.15.6",
     "metacall": "^0.4.3"
