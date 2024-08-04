@@ -26,7 +26,8 @@ export function activate(context: vscode.ExtensionContext) {
 		const document = editor.document;
 		let text = document.getText(editor.selection);
 		if (!text) {
-			text = "请选择需要处理的完整代码块！";
+			vscode.window.showErrorMessage("请选择需要处理的完整代码块！");
+			return;
 		}
 		vscode.window.showInformationMessage("代码注释正在进行...");
 		const response = send_data(text, 0)
@@ -35,18 +36,18 @@ export function activate(context: vscode.ExtensionContext) {
 				console.log('Response:', innerResult);
 				editor.edit((edit) => {
 					// edit.replace(editor.selection, innerResult);
-				    const selection = editor.selection;
+					const selection = editor.selection;
 					const document = editor.document;
 
 					// 获取选择区域的首行
 					let cur_line = selection.start.line;
-					const lineText = document.lineAt(cur_line+1).text;
+					const lineText = document.lineAt(cur_line + 1).text;
 					const indent = getIndentation(lineText); // 获取当前行的缩进
 					// for (let line of innerResult.split("\n")) {
 					// 	edit.insert(new vscode.Position(cur_line+1, 0),  `${indent}`+line+`\n`);
 					// }
 					// TODO 嵌套类型的缩进有问题
-					edit.insert(new vscode.Position(cur_line+1, 0),  `${indent}`+innerResult+`\n`);
+					edit.insert(new vscode.Position(cur_line + 1, 0), `${indent}` + innerResult + `\n`);
 					vscode.window.showInformationMessage("已完成代码注释！");
 				});
 			})
@@ -95,7 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
 		let ask = '请解释其主要功能';
 		const result = vscode.window.showInputBox({
 			prompt: '请输入和代码相关的问题',
-            placeHolder: ask
+			placeHolder: ask
 		}).then(value => {
 			// 检查用户是否输入了值
 			if (value !== undefined) {
@@ -107,20 +108,61 @@ export function activate(context: vscode.ExtensionContext) {
 				text = document.getText();
 			}
 			const response = send_data(text, 2, ask)
-			.then(response => {
-				let innerResult = JSON.parse(response);  // 去除外部的引号和转义字符
-				console.log('Response:', innerResult);
-				vscode.window.showInformationMessage(innerResult, { modal: true });
-			})
-			.catch(error => {
-				console.error('Error:', error);
-				vscode.window.showErrorMessage("llm服务异常!");
-				return;
+				.then(response => {
+					let innerResult = JSON.parse(response);  // 去除外部的引号和转义字符
+					console.log('Response:', innerResult);
+					vscode.window.showInformationMessage(innerResult, { modal: true }, "Copy").then(selection => {
+						if (selection === 'Copy') {
+							// 复制操作的逻辑
+							vscode.env.clipboard.writeText(innerResult);
+							vscode.window.showInformationMessage('已复制到剪贴板');
+						}
+					}
+					);
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					vscode.window.showErrorMessage("llm服务异常!");
+					return;
+				});
+
+		});
+	});
+
+	const codeFixDisposable = vscode.commands.registerCommand('metacode.codeFix', () => {
+		const global = vscode.window;
+		const editor = global.activeTextEditor;
+		if (!editor) {
+			return;
+		}
+		const document = editor.document;
+		let code_need_fix = document.getText(editor.selection);
+		if (!code_need_fix) {
+			vscode.window.showErrorMessage("请选择需要处理的完整代码块！");
+			return;
+		}
+
+		let all_code = document.getText();
+		vscode.window.showInformationMessage("代码补全正在进行...");
+
+
+		const response = send_data(all_code, 3, code_need_fix)
+		.then(response => {
+			let innerResult = JSON.parse(response);  // 去除外部的引号和转义字符
+			console.log('Response:', innerResult);
+			vscode.window.showInformationMessage(innerResult, { modal: true }, "Instert").then(selection => {
+				if (selection === "Instert") {
+					editor.edit((edit) => {
+						edit.replace(editor.selection, innerResult);
+					});
+				};
 			});
-
-		}) ;
-
-
+		})
+		.catch(error => {
+			console.error('Error:', error);
+			vscode.window.showErrorMessage("llm服务异常!");
+			return "";
+		});
 	});
 
 	context.subscriptions.push(codeCommuentDisposable);
@@ -129,8 +171,8 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function getIndentation(line: string) {
-    const match = line.match(/^\s*/);
-    return match ? match[0] : '';
+	const match = line.match(/^\s*/);
+	return match ? match[0] : '';
 }
 
 

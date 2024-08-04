@@ -2,7 +2,7 @@
   "name": "metacodeless",
   "displayName": "MetaCodeLess",
   "description": "use llm to generate code comments, summary, readme and so on.",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "publisher": "try1995",
   "engines": {
     "vscode": "^1.68.0"
@@ -30,6 +30,10 @@
       {
         "command": "metacode.codeSummaryAsk",
         "title": "metacode: code summary (ask)"
+      },
+      {
+        "command": "metacode.codeFix",
+        "title": "metacode: code Fix (show, add)"
       }
     ],
     "configuration": {

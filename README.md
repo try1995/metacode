@@ -10,6 +10,8 @@
 
 3.metacode: code summary (ask)，弹出窗口，用户补充需要提问的内容：比如get_xxx的方法是做什么用的
 
+4.metacode: code fix (show, add)，选择需要补全的代码，弹出补全后的代码，如果选择插入，会将补全后的代码替换选择的代码
+
 ## Requirements
 
 1.本地或者远程的llm大模型
@@ -53,6 +55,11 @@ Initial release of metacode
 
 2.降低插件版本要求到1.68.0
 
+### 0.1.0
+
+1.新增metacode: code fix (show, add)，代码补全
+
+2.metacode: code summary (ask)支持复制
 
 ## Following extension guidelines
 
